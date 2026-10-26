@@ -4,24 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CompSis Shop - Informática e tecnologia</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
     <header>
-        <p><a href="home.html"><strong>CompSis Shop</strong></a></p>
-
         <nav aria-label="Navegação principal">
-            <a href="home.html" aria-current="page">Início</a>
-            <a href="#produtos">Produtos</a>
+            <form action="home.html" method="get" role="search">
+                <label for="pesquisa">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </label>
+                <input type="search" id="pesquisa" name="q">
+                <button type="submit">Buscar</button>
+            </form>
+            <a href="home.html" aria-current="page">Home</a>
             <a href="#contato">Contato</a>
             <a href="carrinho.html">Meu carrinho</a>
-            <a href="login.html">Minha conta</a>
+            <a href="login.html" aria-label="Minha conta">
+                <i class="fa-solid fa-user"></i>
+            </a>
         </nav>
-
-        <form action="home.html" method="get" role="search">
-            <label for="pesquisa">Buscar produtos</label>
-            <input type="search" id="pesquisa" name="q" placeholder="O que você procura?">
-            <button type="submit">Buscar</button>
-        </form>
     </header>
 
     <main>
