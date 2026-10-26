@@ -22,41 +22,47 @@
         <h1>Meu carrinho</h1>
         <p>Confira os produtos selecionados antes de finalizar sua compra.</p>
 
-        <section aria-labelledby="itens-carrinho">
-            <h2 id="itens-carrinho">Produtos</h2>
+        <section id="secao-itens-carrinho" aria-labelledby="itens-carrinho">
+            <h2 id="itens-carrinho">Produtos (<span id="total-itens">2</span>)</h2>
 
-            <article>
-                <h3>Processador Intel Core i5</h3>
-                <p>⚙️</p>
-                <p>Preço unitário: R$ 1.099,90</p>
-                <label for="quantidade-processador">Quantidade</label>
-                <input type="number" id="quantidade-processador" name="quantidade-processador" min="1" value="1">
-                <p>Subtotal: R$ 1.099,90</p>
-                <a href="home.html#produtos">Continuar comprando</a>
-            </article>
+            <div id="lista-carrinho">
+                <article class="item-carrinho" data-id="processador-i5" data-preco="1099.90">
+                    <h3>Processador Intel Core i5</h3>
+                    <p>⚙️</p>
+                    <p>Preço unitário: R$ 1.099,90</p>
+                    <label for="quantidade-processador">Quantidade</label>
+                    <input type="number" id="quantidade-processador" class="input-quantidade" name="quantidade-processador" min="1" value="1">
+                    <p>Subtotal: <span class="subtotal-item">R$ 1.099,90</span></p>
+                    <button type="button" class="btn-remover-item">Remover</button>
+                    <a href="home.html#produtos">Continuar comprando</a>
+                </article>
 
-            <article>
-                <h3>Memória RAM 16 GB DDR4</h3>
-                <p>💾</p>
-                <p>Preço unitário: R$ 249,90</p>
-                <label for="quantidade-memoria">Quantidade</label>
-                <input type="number" id="quantidade-memoria" name="quantidade-memoria" min="1" value="1">
-                <p>Subtotal: R$ 249,90</p>
-                <a href="home.html#produtos">Continuar comprando</a>
-            </article>
+                <article class="item-carrinho" data-id="memoria-ram-16gb" data-preco="249.90">
+                    <h3>Memória RAM 16 GB DDR4</h3>
+                    <p>💾</p>
+                    <p>Preço unitário: R$ 249,90</p>
+                    <label for="quantidade-memoria">Quantidade</label>
+                    <input type="number" id="quantidade-memoria" class="input-quantidade" name="quantidade-memoria" min="1" value="1">
+                    <p>Subtotal: <span class="subtotal-item">R$ 249,90</span></p>
+                    <button type="button" class="btn-remover-item">Remover</button>
+                    <a href="home.html#produtos">Continuar comprando</a>
+                </article>
+            </div>
         </section>
 
         <section aria-labelledby="resumo-pedido">
             <h2 id="resumo-pedido">Resumo do pedido</h2>
-            <p>Subtotal: R$ 1.349,80</p>
+            <p>Subtotal: <span id="subtotal-pedido">R$ 1.349,80</span></p>
             <p>Frete: calculado na próxima etapa</p>
-            <p><strong>Total: R$ 1.349,80</strong></p>
-            <a href="pagamento.html">Finalizar compra</a>
+            <p><strong>Total: <span id="preco-total">R$ 1.349,80</span></strong></p>
+            <a href="pagamento.html" id="btn-finalizar-pedido">Finalizar compra</a>
         </section>
     </main>
 
     <footer>
         <p>&copy; 2026 CompSis Shop</p>
     </footer>
+
+    <script src="script.js"></script>
 </body>
 </html>

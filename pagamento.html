@@ -16,7 +16,7 @@
 <header>
     <nav>
         <!-- barra de pesquisa -->
-        <method="get">
+        <form action="home.html" method="get">
             <label for="pesquisa">
                 <i class="fa-solid fa-magnifying-glass"></i>
             </label>
@@ -28,7 +28,7 @@
 
         <!-- Links de navegação -->
         <a href="home.html">Home</a>
-        <a href="#">Contato</a>
+        <a href="home.html#contato">Contato</a>
         <a href="carrinho.html">Meu carrinho</a>
 
         <a href="login.html" aria-label="Minha conta">
@@ -52,7 +52,7 @@
                     <option value="credito">Cartão de crédito</option>
                     <option value="debito">Cartão de débito</option>
                     <option value="pix">Pix</option>
-                    <option value="pix">Boleto</option>
+                    <option value="boleto">Boleto</option>
                 </select>
             </p>
 
@@ -65,7 +65,7 @@
                 <input type="text" id="endereco" name="endereco" placeholder="Digite seu endereço" autocomplete="street-address" required >
             </p>
 
-            <fieldset>
+            <fieldset id="dados-cartao">
                 <legend>Dados do cartão</legend>
 
                 <p>
@@ -111,5 +111,6 @@
         </form>
     </main>
 
+    <script src="script.js"></script>
 </body>
 </html>
