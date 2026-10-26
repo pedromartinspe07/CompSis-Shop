@@ -3,6 +3,7 @@
 // =========================================================================
 
 document.addEventListener("DOMContentLoaded", () => {
+    inicializarHeader();
     inicializarCadastro();
     inicializarLogin();
     inicializarPagamento();
@@ -10,6 +11,140 @@ document.addEventListener("DOMContentLoaded", () => {
     inicializarCatalogoEProduto();
     inicializarCarrinho();
 });
+
+// =========================================================================
+// FUNÇÕES UTILITÁRIAS E GERENCIAMENTO DO CARRINHO
+// =========================================================================
+function formatarMoeda(valor) {
+    const numero = Number(valor) || 0;
+    return `R$ ${numero.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
+function extrairPrecoTexto(texto) {
+    if (!texto) return 0;
+    const match = texto.match(/R\$\s*([\d.]+,\d{2})/);
+    if (match) {
+        return parseFloat(match[1].replace(/\./g, "").replace(",", "."));
+    }
+    const limpo = texto.replace(/[^\d,.-]/g, "").replace(/\./g, "").replace(",", ".");
+    return parseFloat(limpo) || 0;
+}
+
+function obterCarrinho() {
+    const salvo = localStorage.getItem("compsis_carrinho");
+    if (salvo !== null) {
+        try {
+            return JSON.parse(salvo);
+        } catch (e) {
+            return [];
+        }
+    }
+
+    // Se ainda não houver carrinho salvo e estivermos na página de carrinho com itens iniciais no HTML,
+    // sincroniza os itens estáticos do HTML para o localStorage na primeira visita
+    const artigosHtml = document.querySelectorAll("#lista-carrinho .item-carrinho, section[aria-labelledby='itens-carrinho'] article");
+    if (artigosHtml.length > 0) {
+        const itensIniciais = Array.from(artigosHtml).map((artigo, index) => {
+            const tituloEl = artigo.querySelector("h3, h2");
+            const nome = tituloEl ? tituloEl.textContent.trim() : `Produto ${index + 1}`;
+            const id = artigo.getAttribute("data-id") || nome.toLowerCase().replace(/\s+/g, "-");
+            const precoAttr = artigo.getAttribute("data-preco");
+            const preco = precoAttr ? parseFloat(precoAttr) : extrairPrecoTexto(artigo.textContent);
+            const inputQtd = artigo.querySelector("input[type='number']");
+            const quantidade = inputQtd ? Math.max(1, parseInt(inputQtd.value, 10) || 1) : 1;
+            const paragrafos = artigo.querySelectorAll("p");
+            const icone = paragrafos.length > 0 ? paragrafos[0].textContent.trim() : "📦";
+
+            return { id, nome, preco, quantidade, icone };
+        });
+
+        salvarCarrinho(itensIniciais);
+        return itensIniciais;
+    }
+
+    return [];
+}
+
+function salvarCarrinho(carrinho) {
+    localStorage.setItem("compsis_carrinho", JSON.stringify(carrinho));
+    atualizarBadgeHeader();
+}
+
+function calcularTotalUnidades(carrinho) {
+    return carrinho.reduce((acc, item) => acc + (Number(item.quantidade) || 1), 0);
+}
+
+function calcularValorTotal(carrinho) {
+    return carrinho.reduce((acc, item) => {
+        const preco = Number(item.preco) || 0;
+        const qtd = Number(item.quantidade) || 1;
+        return acc + preco * qtd;
+    }, 0);
+}
+
+function adicionarAoCarrinho(produto) {
+    const carrinho = obterCarrinho();
+    const itemExistente = carrinho.find(
+        (item) =>
+            (produto.id && item.id === produto.id) ||
+            item.nome.toLowerCase() === produto.nome.toLowerCase()
+    );
+
+    if (itemExistente) {
+        itemExistente.quantidade = (Number(itemExistente.quantidade) || 1) + (Number(produto.quantidade) || 1);
+    } else {
+        carrinho.push({
+            id: produto.id || produto.nome.toLowerCase().replace(/\s+/g, "-"),
+            nome: produto.nome,
+            preco: Number(produto.preco) || 0,
+            quantidade: Number(produto.quantidade) || 1,
+            icone: produto.icone || "📦",
+            imagem: produto.imagem || ""
+        });
+    }
+
+    salvarCarrinho(carrinho);
+    alert(`"${produto.nome}" foi adicionado ao seu carrinho!`);
+}
+
+// =========================================================================
+// 0. HEADER DINÂMICO (Contador do carrinho e Usuário logado)
+// =========================================================================
+function atualizarBadgeHeader() {
+    const linksCarrinho = document.querySelectorAll('header a[href="carrinho.html"]');
+    const carrinho = obterCarrinho();
+    const totalUnidades = calcularTotalUnidades(carrinho);
+
+    linksCarrinho.forEach((link) => {
+        link.textContent = totalUnidades > 0 ? `Meu carrinho (${totalUnidades})` : "Meu carrinho";
+    });
+}
+
+function inicializarHeader() {
+    atualizarBadgeHeader();
+
+    const usuarioLogado = JSON.parse(localStorage.getItem("compsis_usuario_logado") || "null");
+    if (!usuarioLogado || !usuarioLogado.nome) return;
+
+    const linksLogin = document.querySelectorAll('header a[href="login.html"]');
+    linksLogin.forEach((link) => {
+        const primeiroNome = usuarioLogado.nome.split(" ")[0];
+        if (link.querySelector("i")) {
+            link.innerHTML = `<i class="fa-solid fa-user"></i> Olá, ${primeiroNome} (Sair)`;
+        } else {
+            link.textContent = `Olá, ${primeiroNome} (Sair)`;
+        }
+        link.title = "Clique para encerrar a sessão";
+
+        link.addEventListener("click", (e) => {
+            e.preventDefault();
+            if (confirm(`Deseja sair da conta de ${usuarioLogado.nome}?`)) {
+                localStorage.removeItem("compsis_usuario_logado");
+                window.location.reload();
+            }
+        });
+    });
+}
 
 // =========================================================================
 // 1. TELA DE CADASTRO (cadastro.html)
@@ -82,6 +217,24 @@ function inicializarLogin() {
     if (!inputEmail || !inputSenha || inputConfirmarSenha) return;
 
     const formLogin = inputEmail.closest("form");
+    const linkEsqueciSenha = document.getElementById("link-esqueci-senha") || formLogin.querySelector('a[href="#"]');
+
+    if (linkEsqueciSenha) {
+        linkEsqueciSenha.addEventListener("click", (e) => {
+            e.preventDefault();
+            const emailDigitado = inputEmail.value.trim() || prompt("Digite seu e-mail cadastrado para recuperar a senha:");
+            if (!emailDigitado) return;
+
+            const usuarios = JSON.parse(localStorage.getItem("compsis_usuarios") || "[]");
+            const usuario = usuarios.find((u) => u.email.toLowerCase() === emailDigitado.toLowerCase());
+
+            if (usuario) {
+                alert(`Instruções de recuperação enviadas para ${emailDigitado}!\n(Lembrete de teste: sua senha é "${usuario.senha}")`);
+            } else {
+                alert(`Se o e-mail ${emailDigitado} estiver cadastrado, você receberá um link de recuperação em instantes.`);
+            }
+        });
+    }
 
     formLogin.addEventListener("submit", (e) => {
         e.preventDefault();
@@ -90,12 +243,15 @@ function inicializarLogin() {
         const senha = inputSenha.value;
 
         const usuarios = JSON.parse(localStorage.getItem("compsis_usuarios") || "[]");
-        const usuarioEncontrado = usuarios.find(
-            (u) => u.email.toLowerCase() === email.toLowerCase() && u.senha === senha
-        );
+        const usuarioPorEmail = usuarios.find((u) => u.email.toLowerCase() === email.toLowerCase());
 
-        if (usuarioEncontrado || (email !== "" && senha !== "")) {
-            const usuarioAtivo = usuarioEncontrado || {
+        if (usuarioPorEmail && usuarioPorEmail.senha !== senha) {
+            alert("Senha incorreta para este e-mail!");
+            return;
+        }
+
+        if (usuarioPorEmail || (email !== "" && senha !== "")) {
+            const usuarioAtivo = usuarioPorEmail || {
                 nome: email.split("@")[0],
                 email: email,
                 endereco: ""
@@ -123,20 +279,32 @@ function inicializarPagamento() {
     const inputVencimento = document.getElementById("vencimento");
     const inputEndereco = document.getElementById("endereco");
 
+    // Exibe resumo do valor total na tela de pagamento
+    const carrinho = obterCarrinho();
+    const totalCompra = calcularValorTotal(carrinho);
+    const totalUnidades = calcularTotalUnidades(carrinho);
+
+    if (totalUnidades > 0 && !document.getElementById("resumo-pagamento-valor")) {
+        const pResumo = document.createElement("p");
+        pResumo.id = "resumo-pagamento-valor";
+        pResumo.innerHTML = `<strong>Resumo do pedido:</strong> ${totalUnidades} item(ns) — <strong>Total a pagar: ${formatarMoeda(totalCompra)}</strong>`;
+        formPagamento.insertAdjacentElement("beforebegin", pResumo);
+    }
+
     // Preenche endereço automaticamente se o usuário já estiver logado
     const usuarioLogado = JSON.parse(localStorage.getItem("compsis_usuario_logado") || "null");
     if (usuarioLogado && usuarioLogado.endereco && inputEndereco && !inputEndereco.value) {
         inputEndereco.value = usuarioLogado.endereco;
     }
 
-    // Corrige caso o HTML do Miguel tenha <option value="pix">Boleto</option>
+    // Corrige caso o HTML tenha <option value="pix">Boleto</option>
     Array.from(selectPagamento.options).forEach((opt) => {
         if (opt.textContent.trim().toLowerCase().includes("boleto")) {
             opt.value = "boleto";
         }
     });
 
-    // Se o Miguel ainda não tiver criado as divs de PIX e Boleto no HTML, o JS cria automaticamente
+    // Cria as seções de PIX e Boleto caso não estejam no HTML
     let divPix = document.getElementById("dados-pix");
     if (!divPix) {
         divPix = document.createElement("fieldset");
@@ -255,7 +423,7 @@ function inicializarPagamento() {
         }
 
         alert("Pagamento confirmado com sucesso! Obrigado por comprar na CompSis-Shop.");
-        localStorage.removeItem("compsis_carrinho"); // Limpa o carrinho após a compra
+        salvarCarrinho([]); // Limpa o carrinho após a compra
         window.location.href = "home.html";
     });
 }
@@ -267,24 +435,69 @@ function inicializarBusca() {
     const inputPesquisa = document.getElementById("pesquisa");
     if (!inputPesquisa) return;
 
-    // Filtra os cards da página em tempo real conforme o usuário digita
-    inputPesquisa.addEventListener("input", () => {
-        const termo = inputPesquisa.value.toLowerCase().trim();
-        const cardsProdutos = document.querySelectorAll(".produto-card, .card-produto, .item-produto");
+    function filtrarCards(termo) {
+        const termoLimpo = termo.toLowerCase().trim();
+        const cardsProdutos = document.querySelectorAll(
+            "#produtos article, .produto-card, .card-produto, .item-produto"
+        );
 
+        if (cardsProdutos.length === 0) return false;
+
+        let encontrados = 0;
         cardsProdutos.forEach((card) => {
             const texto = card.textContent.toLowerCase();
-            card.style.display = texto.includes(termo) ? "" : "none";
+            const visivel = texto.includes(termoLimpo);
+            card.style.display = visivel ? "" : "none";
+            if (visivel) encontrados++;
         });
+
+        let msgVazio = document.getElementById("msg-busca-vazia");
+        const secaoProdutos = document.getElementById("produtos");
+        if (secaoProdutos) {
+            if (encontrados === 0 && termoLimpo !== "") {
+                if (!msgVazio) {
+                    msgVazio = document.createElement("p");
+                    msgVazio.id = "msg-busca-vazia";
+                    secaoProdutos.appendChild(msgVazio);
+                }
+                msgVazio.textContent = `Nenhum produto encontrado para "${termo}".`;
+                msgVazio.style.display = "block";
+            } else if (msgVazio) {
+                msgVazio.style.display = "none";
+            }
+        }
+
+        return true;
+    }
+
+    // Se a URL já vier com ?q=termo (ex: pesquisou a partir da página de pagamento)
+    const params = new URLSearchParams(window.location.search);
+    const termoUrl = params.get("q");
+    if (termoUrl) {
+        inputPesquisa.value = termoUrl;
+        filtrarCards(termoUrl);
+    }
+
+    // Filtra os cards da página em tempo real conforme o usuário digita
+    inputPesquisa.addEventListener("input", () => {
+        filtrarCards(inputPesquisa.value);
     });
 
     const formPesquisa = inputPesquisa.closest("form");
     if (formPesquisa) {
         formPesquisa.addEventListener("submit", (e) => {
-            e.preventDefault();
             const termo = inputPesquisa.value.trim();
-            if (termo) {
-                alert(`Buscando resultados para: "${termo}"`);
+            const temCardsNaPagina = filtrarCards(termo);
+
+            if (temCardsNaPagina) {
+                e.preventDefault();
+                const secaoProdutos = document.getElementById("produtos");
+                if (secaoProdutos) {
+                    secaoProdutos.scrollIntoView({ behavior: "smooth" });
+                }
+            } else if (termo) {
+                e.preventDefault();
+                window.location.href = `home.html?q=${encodeURIComponent(termo)}`;
             }
         });
     }
@@ -293,40 +506,39 @@ function inicializarBusca() {
 // =========================================================================
 // 5. CATÁLOGO DE PRODUTOS E TELA DE DETALHES (home.html / produto.html)
 // =========================================================================
-function obterCarrinho() {
-    return JSON.parse(localStorage.getItem("compsis_carrinho") || "[]");
-}
-
-function salvarCarrinho(carrinho) {
-    localStorage.setItem("compsis_carrinho", JSON.stringify(carrinho));
-}
-
-function adicionarAoCarrinho(produto) {
-    const carrinho = obterCarrinho();
-    carrinho.push(produto);
-    salvarCarrinho(carrinho);
-    alert(`"${produto.nome}" foi adicionado ao seu carrinho!`);
-}
-
 function inicializarCatalogoEProduto() {
-    // Detecta botões de "Adicionar ao carrinho" (como na tela do Fone Bluetooth)
     const botoes = document.querySelectorAll("button, a.btn-adicionar, .btn-adicionar-carrinho");
 
     botoes.forEach((botao) => {
         const textoBotao = botao.textContent.trim().toLowerCase();
-        if (textoBotao.includes("adicionar ao carrinho")) {
+        if (
+            botao.classList.contains("btn-adicionar-carrinho") ||
+            botao.classList.contains("btn-adicionar") ||
+            textoBotao.includes("adicionar ao carrinho")
+        ) {
             botao.addEventListener("click", (e) => {
                 e.preventDefault();
 
-                const container = botao.closest("main, .produto-detalhe, .card-produto") || document;
-                const tituloEl = container.querySelector("h1, h2, h3");
+                const container = botao.closest("article, .produto-detalhe, .card-produto, main") || document;
+                const tituloEl = container.querySelector("h3, h2, h1");
                 const imagemEl = container.querySelector("img");
+                const iconeEl = container.querySelector(".icone-produto");
+
+                const idAttr = botao.getAttribute("data-id") || container.getAttribute("data-id");
+                const nomeAttr = botao.getAttribute("data-nome");
                 const precoAttr = botao.getAttribute("data-preco");
+                const iconeAttr = botao.getAttribute("data-icone") || container.getAttribute("data-icone");
+
+                const nome = nomeAttr || (tituloEl ? tituloEl.textContent.trim() : "Produto CompSis");
+                const preco = precoAttr ? parseFloat(precoAttr) : extrairPrecoTexto(container.textContent);
+                const icone = iconeAttr || (iconeEl ? iconeEl.textContent.trim() : "📦");
 
                 const produto = {
-                    id: Date.now(),
-                    nome: tituloEl ? tituloEl.textContent.trim() : "Fone Bluetooth",
-                    preco: precoAttr ? parseFloat(precoAttr) : 166.67,
+                    id: idAttr || nome.toLowerCase().replace(/\s+/g, "-"),
+                    nome: nome,
+                    preco: preco,
+                    quantidade: 1,
+                    icone: icone,
                     imagem: imagemEl ? imagemEl.src : ""
                 };
 
@@ -340,28 +552,120 @@ function inicializarCatalogoEProduto() {
 // 6. TELA DE CARRINHO (carrinho.html)
 // =========================================================================
 function inicializarCarrinho() {
+    const secaoItens = document.getElementById("secao-itens-carrinho") || document.querySelector('section[aria-labelledby="itens-carrinho"]');
     const elTotalItens = document.getElementById("total-itens");
+    const elSubtotalPedido = document.getElementById("subtotal-pedido");
     const elPrecoTotal = document.getElementById("preco-total");
     const btnFinalizar = document.getElementById("btn-finalizar-pedido");
 
-    const carrinho = obterCarrinho();
+    // Se não estivermos na página de carrinho, não prossegue
+    if (!secaoItens && !elTotalItens && !elPrecoTotal) return;
 
-    if (elTotalItens) {
-        elTotalItens.textContent = carrinho.length;
+    let listaContainer = document.getElementById("lista-carrinho");
+    if (!listaContainer && secaoItens) {
+        listaContainer = document.createElement("div");
+        listaContainer.id = "lista-carrinho";
+        const artigosExistentes = secaoItens.querySelectorAll("article");
+        artigosExistentes.forEach((art) => listaContainer.appendChild(art));
+        secaoItens.appendChild(listaContainer);
     }
 
-    if (elPrecoTotal) {
-        const soma = carrinho.reduce((acc, item) => acc + (Number(item.preco) || 0), 0);
-        elPrecoTotal.textContent = `${soma.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}R$`;
+    function renderizarCarrinho() {
+        const carrinho = obterCarrinho();
+        const totalUnidades = calcularTotalUnidades(carrinho);
+        const somaTotal = calcularValorTotal(carrinho);
+
+        if (elTotalItens) {
+            elTotalItens.textContent = totalUnidades;
+        }
+
+        if (elSubtotalPedido) {
+            elSubtotalPedido.textContent = formatarMoeda(somaTotal);
+        }
+
+        if (elPrecoTotal) {
+            elPrecoTotal.textContent = formatarMoeda(somaTotal);
+        }
+
+        if (!listaContainer) return;
+
+        if (carrinho.length === 0) {
+            listaContainer.innerHTML = `
+                <p>Seu carrinho está vazio no momento.</p>
+                <p><a href="home.html#produtos">Voltar para o catálogo de produtos</a></p>
+            `;
+            return;
+        }
+
+        listaContainer.innerHTML = "";
+
+        carrinho.forEach((item, index) => {
+            const precoUnitario = Number(item.preco) || 0;
+            const quantidade = Math.max(1, Number(item.quantidade) || 1);
+            const subtotalItem = precoUnitario * quantidade;
+            const inputId = `quantidade-item-${index}`;
+
+            const article = document.createElement("article");
+            article.className = "item-carrinho";
+            article.setAttribute("data-id", item.id || index);
+
+            article.innerHTML = `
+                <h3>${item.nome}</h3>
+                <p>${item.icone || "📦"}</p>
+                <p>Preço unitário: ${formatarMoeda(precoUnitario)}</p>
+                <label for="${inputId}">Quantidade</label>
+                <input type="number" id="${inputId}" class="input-quantidade" min="1" value="${quantidade}">
+                <p>Subtotal: <span class="subtotal-item">${formatarMoeda(subtotalItem)}</span></p>
+                <button type="button" class="btn-remover-item">Remover produto</button>
+                <a href="home.html#produtos">Continuar comprando</a>
+            `;
+
+            const inputQtd = article.querySelector(".input-quantidade");
+            inputQtd.addEventListener("change", (e) => {
+                let novaQtd = parseInt(e.target.value, 10);
+                if (isNaN(novaQtd) || novaQtd < 1) {
+                    novaQtd = 1;
+                }
+                const carrinhoAtual = obterCarrinho();
+                if (carrinhoAtual[index]) {
+                    carrinhoAtual[index].quantidade = novaQtd;
+                    salvarCarrinho(carrinhoAtual);
+                    renderizarCarrinho();
+                }
+            });
+
+            const btnRemover = article.querySelector(".btn-remover-item");
+            btnRemover.addEventListener("click", () => {
+                const carrinhoAtual = obterCarrinho();
+                carrinhoAtual.splice(index, 1);
+                salvarCarrinho(carrinhoAtual);
+                renderizarCarrinho();
+            });
+
+            listaContainer.appendChild(article);
+        });
     }
 
-    // Procura o botão "Finalizar pedido" (mesmo se estiver escrito "Finaizar pedido" igual à foto)
+    renderizarCarrinho();
+
+    // Botão de finalizar compra / pedido
     const todosBotoes = document.querySelectorAll("button, a");
     todosBotoes.forEach((btn) => {
         const txt = btn.textContent.trim().toLowerCase();
-        if (txt.includes("finalizar pedido") || txt.includes("finaizar pedido") || btn === btnFinalizar) {
+        if (
+            txt.includes("finalizar pedido") ||
+            txt.includes("finaizar pedido") ||
+            txt.includes("finalizar compra") ||
+            btn === btnFinalizar
+        ) {
             btn.addEventListener("click", (e) => {
                 e.preventDefault();
+                const carrinhoAtual = obterCarrinho();
+                if (carrinhoAtual.length === 0) {
+                    alert("Seu carrinho está vazio! Adicione produtos antes de finalizar a compra.");
+                    window.location.href = "home.html#produtos";
+                    return;
+                }
                 window.location.href = "pagamento.html";
             });
         }
