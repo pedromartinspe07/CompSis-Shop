@@ -269,22 +269,19 @@ function inicializarLogin() {
 // 3. TELA DE PAGAMENTO (pagamento.html)
 // =========================================================================
 function inicializarPagamento() {
-    const selectPagamento = document.getElementById("forma-pagamento");
+    const selectPagamento =
+        document.getElementById("forma-pagamento") ||
+        document.querySelector("main select, form select");
     if (!selectPagamento) return; // Não estamos na tela de pagamento
 
-    const formPagamento = selectPagamento.closest("form");
-    const fieldsetCartao = document.getElementById("dados-cartao") || formPagamento.querySelector("fieldset");
-    const inputNumeroCartao = document.getElementById("numero-cartao");
-    const inputCVV = document.getElementById("codigo-verificacao");
-    const inputVencimento = document.getElementById("vencimento");
-    const inputEndereco = document.getElementById("endereco");
+    const formPagamento = selectPagamento.closest("form") || document.querySelector("form");
 
     // Exibe resumo do valor total na tela de pagamento
     const carrinho = obterCarrinho();
     const totalCompra = calcularValorTotal(carrinho);
     const totalUnidades = calcularTotalUnidades(carrinho);
 
-    if (totalUnidades > 0 && !document.getElementById("resumo-pagamento-valor")) {
+    if (totalUnidades > 0 && formPagamento && !document.getElementById("resumo-pagamento-valor")) {
         const pResumo = document.createElement("p");
         pResumo.id = "resumo-pagamento-valor";
         pResumo.innerHTML = `<strong>Resumo do pedido:</strong> ${totalUnidades} item(ns) — <strong>Total a pagar: ${formatarMoeda(totalCompra)}</strong>`;
@@ -293,139 +290,156 @@ function inicializarPagamento() {
 
     // Preenche endereço automaticamente se o usuário já estiver logado
     const usuarioLogado = JSON.parse(localStorage.getItem("compsis_usuario_logado") || "null");
+    const inputEndereco =
+        document.getElementById("endereco") ||
+        document.querySelector('input[placeholder*="Rua"], input[name*="endereco"]');
     if (usuarioLogado && usuarioLogado.endereco && inputEndereco && !inputEndereco.value) {
         inputEndereco.value = usuarioLogado.endereco;
     }
 
-    // Corrige caso o HTML tenha <option value="pix">Boleto</option>
-    Array.from(selectPagamento.options).forEach((opt) => {
-        if (opt.textContent.trim().toLowerCase().includes("boleto")) {
+    // Padroniza os valores do <select> de forma de pagamento pelo texto de cada <option>
+    Array.from(selectPagamento.options).forEach((opt, idx) => {
+        const txt = opt.textContent.trim().toLowerCase();
+        if (txt.includes("selecione") || (idx === 0 && !opt.value)) {
+            opt.value = "";
+        } else if (txt.includes("crédito") || txt.includes("credito")) {
+            opt.value = "credito";
+        } else if (txt.includes("débito") || txt.includes("debito")) {
+            opt.value = "debito";
+        } else if (txt.includes("pix")) {
+            opt.value = "pix";
+        } else if (txt.includes("boleto")) {
             opt.value = "boleto";
+        } else if (txt.includes("cartão") || txt.includes("cartao")) {
+            opt.value = "credito";
         }
     });
 
-    // Cria as seções de PIX e Boleto caso não estejam no HTML
-    let divPix = document.getElementById("dados-pix");
-    if (!divPix) {
-        divPix = document.createElement("fieldset");
-        divPix.id = "dados-pix";
-        divPix.style.display = "none";
-        divPix.innerHTML = `
-            <legend>Pagamento via PIX</legend>
-            <p><i class="fa-solid fa-qrcode"></i> Escaneie o QR Code ou copie a chave abaixo:</p>
-            <p>
-                <input type="text" id="chave-pix" value="00020126360014BR.GOV.BCB.PIX0114COMPSISSHOP2026" readonly style="width: 100%; max-width: 350px;">
-            </p>
-            <button type="button" id="btn-copiar-pix">
-                <i class="fa-solid fa-copy"></i> Copiar código PIX
-            </button>
-        `;
-        fieldsetCartao.insertAdjacentElement("afterend", divPix);
-    }
-
-    let divBoleto = document.getElementById("dados-boleto");
-    if (!divBoleto) {
-        divBoleto = document.createElement("fieldset");
-        divBoleto.id = "dados-boleto";
-        divBoleto.style.display = "none";
-        divBoleto.innerHTML = `
-            <legend>Pagamento via Boleto Bancário</legend>
-            <p><i class="fa-solid fa-barcode"></i> O boleto tem vencimento em 3 dias úteis.</p>
-            <p><strong>Linha Digitável:</strong> 34191.79001 01043.510047 91020.150008 8 95670000200000</p>
-        `;
-        divPix.insertAdjacentElement("afterend", divBoleto);
-    }
-
-    // Botão de copiar chave PIX
-    const btnCopiarPix = document.getElementById("btn-copiar-pix");
-    if (btnCopiarPix) {
-        btnCopiarPix.addEventListener("click", () => {
-            const inputChave = document.getElementById("chave-pix");
-            if (inputChave) {
-                navigator.clipboard.writeText(inputChave.value).catch(() => {});
+    // Localiza os containers de cada forma de pagamento no HTML (seja <section>, <fieldset> ou <div>)
+    function encontrarSecaoPagamento(idPossivel, palavrasChaveTitulo) {
+        for (const id of idPossivel) {
+            const el = document.getElementById(id);
+            if (el) return el;
+        }
+        const titulos = document.querySelectorAll("h2, h3, legend");
+        for (const titulo of titulos) {
+            const texto = titulo.textContent.trim().toLowerCase();
+            if (palavrasChaveTitulo.some((p) => texto.includes(p))) {
+                const container = titulo.closest("section, fieldset, .metodo-pagamento, .secao-pagamento, div");
+                if (container && container !== formPagamento && container.tagName !== "MAIN") {
+                    return container;
+                }
             }
-            alert("Código PIX copiado para a área de transferência!");
-        });
+        }
+        return null;
     }
 
-    // Função que alterna entre Cartão, PIX e Boleto
-    const inputsCartao = fieldsetCartao ? fieldsetCartao.querySelectorAll("input") : [];
+    const secaoCredito = encontrarSecaoPagamento(
+        ["secao-credito", "cartao-credito", "dados-credito", "dados-cartao"],
+        ["cartão de crédito", "cartao de credito"]
+    );
+    const secaoDebito = encontrarSecaoPagamento(
+        ["secao-debito", "cartao-debito", "dados-debito"],
+        ["cartão de débito", "cartao de debito"]
+    );
+    const secaoPix = encontrarSecaoPagamento(
+        ["secao-pix", "pagamento-pix", "dados-pix", "pix"],
+        ["pagamento via pix", "via pix"]
+    );
+    const secaoBoleto = encontrarSecaoPagamento(
+        ["secao-boleto", "pagamento-boleto", "dados-boleto", "boleto"],
+        ["boleto bancário", "boleto bancario"]
+    );
 
+    const mapaSecoes = {
+        credito: secaoCredito,
+        debito: secaoDebito,
+        pix: secaoPix,
+        boleto: secaoBoleto
+    };
+
+    // Função que mostra apenas a forma de pagamento escolhida e ativa/desativa o "required" dos campos
     function atualizarMetodoPagamento() {
-        const metodo = selectPagamento.value;
-        const ehCartao = metodo === "credito" || metodo === "debito" || metodo === "cartao";
+        const metodoEscolhido = selectPagamento.value;
 
-        if (fieldsetCartao) {
-            fieldsetCartao.style.display = ehCartao ? "block" : "none";
-        }
-        // Retira o "required" dos campos de cartão quando o usuário escolhe PIX ou Boleto
-        inputsCartao.forEach((input) => {
-            input.required = ehCartao;
+        Object.entries(mapaSecoes).forEach(([chave, secao]) => {
+            if (!secao) return;
+            const ativo = chave === metodoEscolhido;
+            secao.style.display = ativo ? "block" : "none";
+
+            const campos = secao.querySelectorAll("input, select");
+            campos.forEach((campo) => {
+                campo.required = ativo;
+                campo.disabled = !ativo;
+            });
         });
-
-        if (divPix) {
-            divPix.style.display = metodo === "pix" ? "block" : "none";
-        }
-        if (divBoleto) {
-            divBoleto.style.display = metodo === "boleto" ? "block" : "none";
-        }
     }
 
     selectPagamento.addEventListener("change", atualizarMetodoPagamento);
-    atualizarMetodoPagamento();
+    atualizarMetodoPagamento(); // Executa ao abrir a página para esconder todas até o usuário escolher
 
-    // Máscaras de formatação para os inputs do Cartão
-    if (inputNumeroCartao) {
-        inputNumeroCartao.addEventListener("input", (e) => {
-            let v = e.target.value.replace(/\D/g, "").slice(0, 16);
-            v = v.replace(/(\d{4})(?=\d)/g, "$1 ");
-            e.target.value = v;
-        });
-    }
+    // Máscaras automáticas para CEP, CPF, Número do Cartão, Validade e CVV
+    const todosInputs = document.querySelectorAll("main input, form input");
+    todosInputs.forEach((input) => {
+        const info = `${input.id} ${input.name} ${input.placeholder}`.toLowerCase();
 
-    if (inputCVV) {
-        inputCVV.addEventListener("input", (e) => {
-            e.target.value = e.target.value.replace(/\D/g, "").slice(0, 4);
-        });
-    }
-
-    if (inputVencimento) {
-        inputVencimento.addEventListener("input", (e) => {
-            let v = e.target.value.replace(/\D/g, "").slice(0, 4);
-            if (v.length >= 3) {
-                v = `${v.slice(0, 2)}/${v.slice(2)}`;
-            }
-            e.target.value = v;
-        });
-    }
+        if (info.includes("cep") || info.includes("00000-000")) {
+            input.addEventListener("input", (e) => {
+                let v = e.target.value.replace(/\D/g, "").slice(0, 8);
+                if (v.length > 5) v = `${v.slice(0, 5)}-${v.slice(5)}`;
+                e.target.value = v;
+            });
+        } else if (info.includes("cpf")) {
+            input.addEventListener("input", (e) => {
+                let v = e.target.value.replace(/\D/g, "").slice(0, 11);
+                if (v.length > 9) v = `${v.slice(0, 3)}.${v.slice(3, 6)}.${v.slice(6, 9)}-${v.slice(9)}`;
+                else if (v.length > 6) v = `${v.slice(0, 3)}.${v.slice(3, 6)}.${v.slice(6)}`;
+                else if (v.length > 3) v = `${v.slice(0, 3)}.${v.slice(3)}`;
+                e.target.value = v;
+            });
+        } else if (info.includes("numero") || info.includes("número")) {
+            input.addEventListener("input", (e) => {
+                let v = e.target.value.replace(/\D/g, "").slice(0, 16);
+                v = v.replace(/(\d{4})(?=\d)/g, "$1 ");
+                e.target.value = v;
+            });
+        } else if (info.includes("validade") || info.includes("vencimento") || info.includes("mm/aa")) {
+            input.addEventListener("input", (e) => {
+                let v = e.target.value.replace(/\D/g, "").slice(0, 4);
+                if (v.length >= 3) v = `${v.slice(0, 2)}/${v.slice(2)}`;
+                e.target.value = v;
+            });
+        } else if (info.includes("cvv") || info.includes("seguranca") || info.includes("segurança") || info.includes("verificacao")) {
+            input.addEventListener("input", (e) => {
+                e.target.value = e.target.value.replace(/\D/g, "").slice(0, 4);
+            });
+        }
+    });
 
     // Envio do formulário de pagamento
-    formPagamento.addEventListener("submit", (e) => {
-        e.preventDefault();
+    if (formPagamento) {
+        formPagamento.addEventListener("submit", (e) => {
+            e.preventDefault();
 
-        const metodo = selectPagamento.value;
-        const ehCartao = metodo === "credito" || metodo === "debito" || metodo === "cartao";
-
-        if (ehCartao) {
-            const numLimpo = inputNumeroCartao.value.replace(/\D/g, "");
-            if (numLimpo.length < 13) {
-                alert("Por favor, digite um número de cartão válido (mínimo 13 dígitos).");
+            const metodo = selectPagamento.value;
+            if (!metodo) {
+                alert("Por favor, selecione uma forma de pagamento antes de confirmar!");
+                selectPagamento.focus();
                 return;
             }
-            if (inputCVV.value.length < 3) {
-                alert("Por favor, digite um código CVV válido (3 ou 4 dígitos).");
-                return;
-            }
-            if (inputVencimento.value.length < 5) {
-                alert("Por favor, digite a validade no formato MM/AA.");
-                return;
-            }
-        }
 
-        alert("Pagamento confirmado com sucesso! Obrigado por comprar na CompSis-Shop.");
-        salvarCarrinho([]); // Limpa o carrinho após a compra
-        window.location.href = "home.html";
-    });
+            if (metodo === "pix") {
+                alert("Pedido confirmado! Chave PIX Copia e Cola gerada:\n00020126360014BR.GOV.BCB.PIX0114COMPSISSHOP2026");
+            } else if (metodo === "boleto") {
+                alert("Pedido confirmado! Boleto gerado com sucesso.\nLinha Digitável: 34191.79001 01043.510047 91020.150008 8 95670000200000");
+            } else {
+                alert("Pagamento com cartão aprovado com sucesso! Obrigado por comprar na CompSis-Shop.");
+            }
+
+            salvarCarrinho([]); // Limpa o carrinho após a compra
+            window.location.href = "home.html";
+        });
+    }
 }
 
 // =========================================================================
