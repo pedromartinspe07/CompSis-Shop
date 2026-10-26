@@ -9,12 +9,13 @@
     <!-- Biblioteca de ícones -->
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
 
 <header>
-    <nav>
+    <nav aria-label="Navegação principal">
         <!-- barra de pesquisa -->
         <form action="home.html" method="get" role="search">
             <label for="pesquisa">
@@ -28,7 +29,7 @@
 
         <!-- Links de navegação -->
         <a href="home.html">Home</a>
-        <a href="#">Contato</a>
+        <a href="home.html#contato">Contato</a>
         <a href="carrinho.html">Meu carrinho</a>
 
         <a href="login.html" aria-label="Minha conta">
@@ -37,7 +38,12 @@
     </nav>
 </header>
 
- <!-- Seleção da forma de pagamento -->
+    <main>
+        <h1>Pagamento</h1>
+
+        <form action="#" method="post">
+
+            <!-- Seleção da forma de pagamento -->
             <section id="selecao-pagamento">
 
                 <label for="forma-pagamento">

@@ -1,12 +1,14 @@
-/*
-   COMPSIS-SHOP - login.css (somente a tela de login)
+/* =========================================================================
+   COMPSIS-SHOP - styles.css (Folha de estilos completa)
    Paleta: preto, vermelho e branco
    ========================================================================= */
 
 :root {
     --preto: #000000;
     --vermelho: #d4001a;
+    --vermelho-escuro: #9f0014;
     --branco: #ffffff;
+    --cinza-claro: #f7f7f7;
     --cinza-borda: #dcdcdc;
     --cinza-texto: #5c5c5c;
     --raio: 6px;
@@ -68,12 +70,13 @@ header nav a {
     transition: border-color 0.2s;
 }
 
-header nav a:hover {
+header nav a:hover,
+header nav a[aria-current="page"] {
     color: var(--branco);
     border-bottom-color: var(--vermelho);
 }
 
-/* Busca */
+/* Busca no Header */
 header form {
     display: flex;
     flex: 1 1 260px;
@@ -116,22 +119,22 @@ header form button {
 }
 
 header form button:hover {
-    background: #9f0014;
+    background: var(--vermelho-escuro);
 }
 
-/* ---------- Conteúdo ---------- */
+/* ---------- Conteúdo Principal ---------- */
 main {
     flex: 1;
     width: 100%;
     max-width: 1100px;
     margin: 0 auto;
-    padding: 4rem 1.5rem;
+    padding: 3rem 1.5rem;
 }
 
 main h1 {
-    margin: 0 0 2rem;
+    margin: 0 0 1.5rem;
     text-align: center;
-    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
     font-weight: 800;
 }
 
@@ -144,9 +147,231 @@ main h1::after {
     background: var(--vermelho);
 }
 
-/* ---------- Formulário de login ---------- */
+main > p {
+    text-align: center;
+    color: var(--cinza-texto);
+    margin-bottom: 2rem;
+}
+
+/* ---------- Home: Seção Boas-vindas (Hero) ---------- */
+section[aria-labelledby="boas-vindas"] {
+    text-align: center;
+    padding: 2.5rem 1.5rem;
+    margin-bottom: 3rem;
+    background: var(--cinza-claro);
+    border: 1px solid var(--cinza-borda);
+    border-top: 4px solid var(--preto);
+    border-radius: var(--raio);
+}
+
+section[aria-labelledby="boas-vindas"] p {
+    font-size: 1.1rem;
+    color: var(--cinza-texto);
+    margin: 0 auto 1.5rem;
+    max-width: 600px;
+}
+
+section[aria-labelledby="boas-vindas"] a {
+    display: inline-block;
+    padding: 0.75rem 1.6rem;
+    font-weight: 700;
+    text-decoration: none;
+    color: var(--branco);
+    background: var(--vermelho);
+    border-radius: var(--raio);
+    transition: background 0.2s;
+}
+
+section[aria-labelledby="boas-vindas"] a:hover {
+    background: var(--preto);
+    color: var(--branco);
+}
+
+/* ---------- Home: Catálogo de Produtos ---------- */
+#produtos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.5rem;
+}
+
+#produtos > h2 {
+    grid-column: 1 / -1;
+    margin: 0 0 0.5rem;
+    font-size: 1.6rem;
+    border-left: 4px solid var(--vermelho);
+    padding-left: 0.75rem;
+}
+
+.card-produto {
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    background: var(--branco);
+    border: 1px solid var(--cinza-borda);
+    border-top: 4px solid var(--preto);
+    border-radius: var(--raio);
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card-produto:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.card-produto h3 {
+    margin: 0 0 0.5rem;
+    font-size: 1.15rem;
+}
+
+.card-produto .icone-produto {
+    font-size: 3rem;
+    margin: 0.5rem 0;
+}
+
+.card-produto p {
+    margin: 0.4rem 0;
+    color: var(--cinza-texto);
+}
+
+.card-produto p strong {
+    display: block;
+    font-size: 1.35rem;
+    color: var(--preto);
+    margin: 0.5rem 0;
+}
+
+.card-produto .btn-adicionar-carrinho {
+    margin-top: auto;
+    padding: 0.7rem 1rem;
+    font: inherit;
+    font-weight: 700;
+    color: var(--branco);
+    background: var(--vermelho);
+    border: 2px solid var(--vermelho);
+    border-radius: var(--raio);
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.card-produto .btn-adicionar-carrinho:hover {
+    background: var(--preto);
+    border-color: var(--preto);
+}
+
+.card-produto a {
+    margin-top: 0.6rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* ---------- Carrinho de Compras ---------- */
+#secao-itens-carrinho {
+    margin-bottom: 2.5rem;
+}
+
+#secao-itens-carrinho h2,
+section[aria-labelledby="resumo-pedido"] h2 {
+    font-size: 1.4rem;
+    border-left: 4px solid var(--vermelho);
+    padding-left: 0.75rem;
+    margin-bottom: 1.2rem;
+}
+
+#lista-carrinho {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.item-carrinho {
+    padding: 1.5rem;
+    background: var(--branco);
+    border: 1px solid var(--cinza-borda);
+    border-top: 4px solid var(--preto);
+    border-radius: var(--raio);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.item-carrinho h3 {
+    margin: 0;
+    font-size: 1.15rem;
+}
+
+.item-carrinho p {
+    margin: 0;
+}
+
+.item-carrinho label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-top: 0.4rem;
+}
+
+.item-carrinho .input-quantidade {
+    width: 90px;
+    padding: 0.45rem 0.6rem;
+    font: inherit;
+    border: 1px solid var(--cinza-borda);
+    border-radius: var(--raio);
+}
+
+.item-carrinho .btn-remover-item {
+    margin-top: 0.5rem;
+    padding: 0.55rem 1rem;
+    font: inherit;
+    font-weight: 600;
+    color: var(--vermelho);
+    background: var(--branco);
+    border: 1px solid var(--vermelho);
+    border-radius: var(--raio);
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.item-carrinho .btn-remover-item:hover {
+    background: var(--vermelho);
+    color: var(--branco);
+}
+
+section[aria-labelledby="resumo-pedido"] {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 1.75rem;
+    background: var(--cinza-claro);
+    border: 1px solid var(--cinza-borda);
+    border-top: 4px solid var(--preto);
+    border-radius: var(--raio);
+}
+
+section[aria-labelledby="resumo-pedido"] p {
+    margin: 0.5rem 0;
+    font-size: 1.05rem;
+}
+
+#btn-finalizar-pedido {
+    display: block;
+    margin-top: 1.25rem;
+    padding: 0.85rem 1.4rem;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 700;
+    color: var(--branco);
+    background: var(--vermelho);
+    border-radius: var(--raio);
+    transition: background 0.2s;
+}
+
+#btn-finalizar-pedido:hover {
+    background: var(--preto);
+    color: var(--branco);
+}
+
+/* ---------- Formulários (Login, Cadastro e Pagamento) ---------- */
 main form {
-    max-width: 420px;
+    max-width: 480px;
     margin: 0 auto;
     padding: 2rem;
     background: var(--branco);
@@ -155,13 +380,35 @@ main form {
     border-radius: var(--raio);
 }
 
-main form p {
+/* Grupos de pagamento e entrega */
+#selecao-pagamento,
+.grupo-dados {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--cinza-borda);
+}
+
+.grupo-dados h2 {
+    margin: 0 0 1rem;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+#selecao-pagamento label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+/* Campos com ícone ao lado (Login e Cadastro) */
+main form > p {
     display: flex;
     margin: 0 0 1.1rem;
 }
 
-/* Ícone em caixa preta + campo */
-main form label {
+main form > p > label {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -171,7 +418,7 @@ main form label {
     border-radius: var(--raio) 0 0 var(--raio);
 }
 
-main form input {
+main form > p > input {
     flex: 1;
     min-width: 0;
     padding: 0.75rem 0.9rem;
@@ -182,26 +429,51 @@ main form input {
     border-radius: 0 var(--raio) var(--raio) 0;
 }
 
+/* Campos empilhados nas seções de Pagamento */
+.grupo-dados p {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin: 0 0 1rem;
+}
+
+.grupo-dados label {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.grupo-dados input,
+main form select {
+    width: 100%;
+    padding: 0.75rem 0.9rem;
+    font: inherit;
+    color: var(--preto);
+    background: var(--branco);
+    border: 1px solid var(--cinza-borda);
+    border-radius: var(--raio);
+}
+
 main form input::placeholder {
     color: #8a8a8a;
 }
 
-main form input:focus {
+main form input:focus,
+main form select:focus {
     outline: none;
     border-color: var(--vermelho);
     box-shadow: 0 0 0 3px rgba(212, 0, 26, 0.18);
 }
 
-/* Linha "Esqueci minha senha | Cadastre-se" */
+/* Linha de links auxiliares nos formulários */
 main form p:has(a) {
     display: block;
-    margin-bottom: 1.5rem;
+    margin: 1.25rem 0;
     text-align: center;
     font-size: 0.95rem;
     color: var(--cinza-texto);
 }
 
-/* Botão Entrar */
+/* Botões principais dos formulários */
 main form button {
     display: flex;
     align-items: center;
@@ -224,10 +496,31 @@ main form button:hover {
     border-color: var(--preto);
 }
 
-/* ---------- Celular ---------- */
+/* ---------- Rodapé ---------- */
+footer {
+    margin-top: auto;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    color: var(--branco);
+    background: var(--preto);
+    border-top: 4px solid var(--vermelho);
+}
+
+footer h2 {
+    margin: 0 0 0.5rem;
+    font-size: 1.3rem;
+}
+
+footer p {
+    margin: 0.25rem 0;
+    font-size: 0.95rem;
+    color: var(--cinza-borda);
+}
+
+/* ---------- Responsividade (Celular) ---------- */
 @media (max-width: 640px) {
     main {
-        padding: 2.5rem 1rem;
+        padding: 2rem 1rem;
     }
 
     main form {
