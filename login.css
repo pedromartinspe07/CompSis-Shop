@@ -1,0 +1,247 @@
+/*
+   COMPSIS-SHOP - login.css (somente a tela de login)
+   Paleta: preto, vermelho e branco
+   ========================================================================= */
+
+:root {
+    --preto: #000000;
+    --vermelho: #d4001a;
+    --branco: #ffffff;
+    --cinza-borda: #dcdcdc;
+    --cinza-texto: #5c5c5c;
+    --raio: 6px;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.6;
+    color: var(--preto);
+    background: var(--branco);
+}
+
+a {
+    color: var(--vermelho);
+    text-underline-offset: 3px;
+}
+
+a:hover {
+    color: var(--preto);
+}
+
+:focus-visible {
+    outline: 3px solid var(--vermelho);
+    outline-offset: 2px;
+}
+
+/* ---------- Cabeçalho ---------- */
+header {
+    background: var(--preto);
+    border-bottom: 4px solid var(--vermelho);
+}
+
+header nav {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0.9rem 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1.5rem;
+}
+
+header nav a {
+    color: var(--branco);
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0.35rem 0;
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.2s;
+}
+
+header nav a:hover {
+    color: var(--branco);
+    border-bottom-color: var(--vermelho);
+}
+
+/* Busca */
+header form {
+    display: flex;
+    flex: 1 1 260px;
+    max-width: 420px;
+    margin-right: auto;
+}
+
+header form label {
+    display: flex;
+    align-items: center;
+    padding: 0 0.9rem;
+    color: var(--preto);
+    background: var(--branco);
+    border-radius: var(--raio) 0 0 var(--raio);
+}
+
+header form input {
+    flex: 1;
+    min-width: 0;
+    padding: 0.6rem 0.5rem;
+    font: inherit;
+    border: 0;
+    border-radius: 0;
+}
+
+header form input:focus {
+    outline: none;
+}
+
+header form button {
+    padding: 0.6rem 1.1rem;
+    font: inherit;
+    font-weight: 700;
+    color: var(--branco);
+    background: var(--vermelho);
+    border: 0;
+    border-radius: 0 var(--raio) var(--raio) 0;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+header form button:hover {
+    background: #9f0014;
+}
+
+/* ---------- Conteúdo ---------- */
+main {
+    flex: 1;
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 4rem 1.5rem;
+}
+
+main h1 {
+    margin: 0 0 2rem;
+    text-align: center;
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-weight: 800;
+}
+
+main h1::after {
+    content: "";
+    display: block;
+    width: 56px;
+    height: 4px;
+    margin: 0.7rem auto 0;
+    background: var(--vermelho);
+}
+
+/* ---------- Formulário de login ---------- */
+main form {
+    max-width: 420px;
+    margin: 0 auto;
+    padding: 2rem;
+    background: var(--branco);
+    border: 1px solid var(--cinza-borda);
+    border-top: 4px solid var(--preto);
+    border-radius: var(--raio);
+}
+
+main form p {
+    display: flex;
+    margin: 0 0 1.1rem;
+}
+
+/* Ícone em caixa preta + campo */
+main form label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 3rem;
+    color: var(--branco);
+    background: var(--preto);
+    border-radius: var(--raio) 0 0 var(--raio);
+}
+
+main form input {
+    flex: 1;
+    min-width: 0;
+    padding: 0.75rem 0.9rem;
+    font: inherit;
+    color: var(--preto);
+    background: var(--branco);
+    border: 1px solid var(--cinza-borda);
+    border-radius: 0 var(--raio) var(--raio) 0;
+}
+
+main form input::placeholder {
+    color: #8a8a8a;
+}
+
+main form input:focus {
+    outline: none;
+    border-color: var(--vermelho);
+    box-shadow: 0 0 0 3px rgba(212, 0, 26, 0.18);
+}
+
+/* Linha "Esqueci minha senha | Cadastre-se" */
+main form p:has(a) {
+    display: block;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-size: 0.95rem;
+    color: var(--cinza-texto);
+}
+
+/* Botão Entrar */
+main form button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    width: 100%;
+    padding: 0.85rem 1.4rem;
+    font: inherit;
+    font-weight: 700;
+    color: var(--branco);
+    background: var(--vermelho);
+    border: 2px solid var(--vermelho);
+    border-radius: var(--raio);
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+main form button:hover {
+    background: var(--preto);
+    border-color: var(--preto);
+}
+
+/* ---------- Celular ---------- */
+@media (max-width: 640px) {
+    main {
+        padding: 2.5rem 1rem;
+    }
+
+    main form {
+        padding: 1.25rem;
+    }
+
+    header form {
+        flex-basis: 100%;
+        max-width: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition: none !important;
+    }
+}
