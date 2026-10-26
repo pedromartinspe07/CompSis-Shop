@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu carrinho - CompSis Shop</title>
+</head>
+<body>
+    <header>
+        <p><a href="home.html"><strong>CompSis Shop</strong></a></p>
+
+        <nav aria-label="Navegação principal">
+            <a href="home.html">Início</a>
+            <a href="home.html#produtos">Produtos</a>
+            <a href="home.html#contato">Contato</a>
+            <a href="carrinho.html" aria-current="page">Meu carrinho</a>
+            <a href="login.html">Minha conta</a>
+        </nav>
+    </header>
+
+    <main>
+        <h1>Meu carrinho</h1>
+        <p>Confira os produtos selecionados antes de finalizar sua compra.</p>
+
+        <section aria-labelledby="itens-carrinho">
+            <h2 id="itens-carrinho">Produtos</h2>
+
+            <article>
+                <h3>Processador Intel Core i5</h3>
+                <p>⚙️</p>
+                <p>Preço unitário: R$ 1.099,90</p>
+                <label for="quantidade-processador">Quantidade</label>
+                <input type="number" id="quantidade-processador" name="quantidade-processador" min="1" value="1">
+                <p>Subtotal: R$ 1.099,90</p>
+                <a href="home.html#produtos">Continuar comprando</a>
+            </article>
+
+            <article>
+                <h3>Memória RAM 16 GB DDR4</h3>
+                <p>💾</p>
+                <p>Preço unitário: R$ 249,90</p>
+                <label for="quantidade-memoria">Quantidade</label>
+                <input type="number" id="quantidade-memoria" name="quantidade-memoria" min="1" value="1">
+                <p>Subtotal: R$ 249,90</p>
+                <a href="home.html#produtos">Continuar comprando</a>
+            </article>
+        </section>
+
+        <section aria-labelledby="resumo-pedido">
+            <h2 id="resumo-pedido">Resumo do pedido</h2>
+            <p>Subtotal: R$ 1.349,80</p>
+            <p>Frete: calculado na próxima etapa</p>
+            <p><strong>Total: R$ 1.349,80</strong></p>
+            <a href="pagamento.html">Finalizar compra</a>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 CompSis Shop</p>
+    </footer>
+</body>
+</html>

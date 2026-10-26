@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CompSis Shop - Informática e tecnologia</title>
+</head>
+<body>
+    <header>
+        <p><a href="home.html"><strong>CompSis Shop</strong></a></p>
+
+        <nav aria-label="Navegação principal">
+            <a href="home.html" aria-current="page">Início</a>
+            <a href="#produtos">Produtos</a>
+            <a href="#contato">Contato</a>
+            <a href="carrinho.html">Meu carrinho</a>
+            <a href="login.html">Minha conta</a>
+        </nav>
+
+        <form action="home.html" method="get" role="search">
+            <label for="pesquisa">Buscar produtos</label>
+            <input type="search" id="pesquisa" name="q" placeholder="O que você procura?">
+            <button type="submit">Buscar</button>
+        </form>
+    </header>
+
+    <main>
+        <section aria-labelledby="boas-vindas">
+            <h1 id="boas-vindas">Tecnologia para acompanhar você</h1>
+            <p>Encontre peças e acessórios para montar ou atualizar seu computador.</p>
+            <a href="#produtos">Ver produtos</a>
+        </section>
+
+        <section id="produtos" aria-labelledby="titulo-produtos">
+            <h2 id="titulo-produtos">Produtos em destaque</h2>
+
+            <article>
+                <h3>Processador Intel Core i5</h3>
+                <p>⚙️</p>
+                <p>Desempenho para trabalho, estudos e entretenimento.</p>
+                <p><strong>R$ 1.099,90</strong></p>
+                <a href="carrinho.html">Ver carrinho</a>
+            </article>
+
+            <article>
+                <h3>Placa de vídeo GeForce RTX</h3>
+                <p>🎮</p>
+                <p>Gráficos de alta qualidade para jogos e criação.</p>
+                <p><strong>R$ 2.499,90</strong></p>
+                <a href="carrinho.html">Ver carrinho</a>
+            </article>
+
+            <article>
+                <h3>Memória RAM 16 GB DDR4</h3>
+                <p>💾</p>
+                <p>Mais velocidade para suas tarefas do dia a dia.</p>
+                <p><strong>R$ 249,90</strong></p>
+                <a href="carrinho.html">Ver carrinho</a>
+            </article>
+
+            <article>
+                <h3>SSD 1 TB</h3>
+                <p>📀</p>
+                <p>Armazenamento rápido para seus arquivos e programas.</p>
+                <p><strong>R$ 399,90</strong></p>
+                <a href="carrinho.html">Ver carrinho</a>
+            </article>
+        </section>
+    </main>
+
+    <footer id="contato">
+        <h2>CompSis Shop</h2>
+        <p>Dúvidas? Entre em contato: atendimento@compsis.shop</p>
+        <p>&copy; 2026 CompSis Shop</p>
+    </footer>
+</body>
+</html>
