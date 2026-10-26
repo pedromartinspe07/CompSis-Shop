@@ -1,0 +1,79 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - Loja Virtual</title>
+
+    <!-- Biblioteca de ícones -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+
+        <main>
+            <h1>Cadastro</h1>
+
+            <form action="#" method="post">
+
+                <p>
+                    <label for="nome">
+                        <i class="fa-solid fa-user"></i>
+                    </label>
+                    <input
+                        type="text" id="nome" name="nome" placeholder="Digite seu nome completo" autocomplete="name" required>
+                </p>
+
+                <p>
+                    <label for="email">
+                        <i class="fa-solid fa-envelope"></i>
+                    </label>
+                    <input type="email" id="email" name="email" placeholder="Digite seu e-mail" autocomplete="email" required>
+                </p>
+
+                <p>
+                    <label for="endereco">
+                        <i class="fa-solid fa-house"></i>
+                    </label>
+                    <input type="text" id="endereco" name="endereco" placeholder="Digite seu endereço"  autocomplete="street-address" required>
+                </p>
+
+                <p>
+                    <label for="telefone">
+                        <i class="fa-solid fa-phone"></i>
+                    </label>
+                    <input type="tel"  id="telefone"  name="telefone"  placeholder="Digite seu telefone"  autocomplete="tel" required>
+                </p>
+
+                <p>
+                    <label for="senha">
+                        <i class="fa-solid fa-lock"></i>
+                    </label>
+                    <input type="password"  id="senha" name="senha" placeholder="Crie uma senha" autocomplete="new-password" required>
+                </p>
+
+                <p>
+                    <label for="confirmar-senha">
+                        <i class="fa-solid fa-lock"></i>
+                    </label>
+                    <input type="password" id="confirmar-senha" name="confirmar_senha"  
+                    placeholder="Confirme sua senha"  autocomplete="new-password" required>
+                </p>
+
+                <button type="submit">
+                    <i class="fa-solid fa-user-check"></i>
+                    Concluir cadastro
+                </button>
+
+                <p>
+                    Já possui uma conta?
+                    <a href="login.html">Fazer login</a>
+                </p>
+
+            </form>
+        </main>
+
+    </body>
+    </html>

@@ -1,0 +1,115 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagamento - Loja Virtual</title>
+
+    <!-- Biblioteca de ícones -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+
+
+<header>
+    <nav>
+        <!-- barra de pesquisa -->
+        <method="get">
+            <label for="pesquisa">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </label>
+
+            <input type="search" id="pesquisa" name="q">
+
+            <button type="submit">Buscar</button>
+        </form>
+
+        <!-- Links de navegação -->
+        <a href="home.html">Home</a>
+        <a href="#">Contato</a>
+        <a href="carrinho.html">Meu carrinho</a>
+
+        <a href="login.html" aria-label="Minha conta">
+            <i class="fa-solid fa-user"></i>
+        </a>
+    </nav>
+</header>
+
+    <main>
+        <h1>Pagamento</h1>
+
+        <form action="#" method="post">
+
+            <p>
+                <label for="forma-pagamento">
+                    <i class="fa-solid fa-credit-card"></i>
+                    Forma de pagamento:
+                </label>
+
+                <select id="forma-pagamento" name="forma_pagamento"  required>
+                    <option value="credito">Cartão de crédito</option>
+                    <option value="debito">Cartão de débito</option>
+                    <option value="pix">Pix</option>
+                    <option value="pix">Boleto</option>
+                </select>
+            </p>
+
+            <p>
+                <label for="endereco">
+                    <i class="fa-solid fa-location-dot"></i>
+                    Endereço de entrega:
+                </label>
+
+                <input type="text" id="endereco" name="endereco" placeholder="Digite seu endereço" autocomplete="street-address" required >
+            </p>
+
+            <fieldset>
+                <legend>Dados do cartão</legend>
+
+                <p>
+                    <label for="numero-cartao">
+                        <i class="fa-solid fa-credit-card"></i>
+                        Número do cartão:
+                    </label>
+
+                    <input type="text" id="numero-cartao" name="numero_cartao" placeholder="Número do cartão" inputmode="numeric" autocomplete="cc-number" required>
+                </p>
+
+                <p>
+                    <label for="codigo-verificacao">
+                        <i class="fa-solid fa-lock"></i>
+                        Código de verificação:
+                    </label>
+
+                    <input  type="password"  id="codigo-verificacao" name="codigo_verificacao"  placeholder="CVV"  inputmode="numeric" autocomplete="cc-csc" required>
+                </p>
+
+                <p>
+                    <label for="vencimento">
+                        <i class="fa-solid fa-calendar-days"></i>
+                        Validade:
+                    </label>
+
+                    <input type="text" id="vencimento" name="vencimento" placeholder="MM/AA"  autocomplete="cc-exp" required >
+                </p>
+            </fieldset>
+
+            <button type="submit">
+                <i class="fa-solid fa-lock"></i>
+                Confirmar pagamento
+            </button>
+
+            <p>
+                <a href="carrinho.html">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Voltar ao carrinho
+                </a>
+            </p>
+
+        </form>
+    </main>
+
+</body>
+</html>
