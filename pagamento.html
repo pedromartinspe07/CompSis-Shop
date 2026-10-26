@@ -37,69 +37,231 @@
     </nav>
 </header>
 
-    <main>
-        <h1>Pagamento</h1>
+            <!-- Seleção da forma de pagamento -->
+            <section id="selecao-pagamento">
 
-        <form action="#" method="post">
-
-            <p>
                 <label for="forma-pagamento">
-                    <i class="fa-solid fa-credit-card"></i>
-                    Forma de pagamento:
+                    <i class="fa-solid fa-wallet"></i>
+                    Forma de pagamento
                 </label>
 
-                <select id="forma-pagamento" name="forma_pagamento"  required>
+                <select  id="forma-pagamento"  name="forma_pagamento"  data-payment-selector  required>
+
                     <option value="credito">Cartão de crédito</option>
                     <option value="debito">Cartão de débito</option>
                     <option value="pix">Pix</option>
-                    <option value="pix">Boleto</option>
+                    <option value="boleto">Boleto bancário</option>
+
                 </select>
-            </p>
+            </section>
 
-            <p>
-                <label for="endereco">
-                    <i class="fa-solid fa-location-dot"></i>
-                    Endereço de entrega:
-                </label>
 
-                <input type="text" id="endereco" name="endereco" placeholder="Digite seu endereço" autocomplete="street-address" required >
-            </p>
+            <!-- Endereço de entrega -->
+            <section id="dados-entrega" class="grupo-dados">
 
-            <fieldset>
-                <legend>Dados do cartão</legend>
+                <h2>Endereço de entrega</h2>
 
                 <p>
-                    <label for="numero-cartao">
-                        <i class="fa-solid fa-credit-card"></i>
-                        Número do cartão:
+                    <label for="endereco">
+                        <i class="fa-solid fa-location-dot"></i>
+                        Endereço completo
                     </label>
 
-                    <input type="text" id="numero-cartao" name="numero_cartao" placeholder="Número do cartão" inputmode="numeric" autocomplete="cc-number" required>
+                    <input type="text" id="endereco"  name="endereco" placeholder="Rua, bairro e número "  autocomplete="street-address" required>
                 </p>
 
                 <p>
-                    <label for="codigo-verificacao">
-                        <i class="fa-solid fa-lock"></i>
-                        Código de verificação:
+                    <label for="cidade">
+                        <i class="fa-solid fa-city"></i>
+                        Cidade
                     </label>
 
-                    <input  type="password"  id="codigo-verificacao" name="codigo_verificacao"  placeholder="CVV"  inputmode="numeric" autocomplete="cc-csc" required>
+                    <input type="text" id="cidade"  name="cidade"  placeholder="Digite sua cidade"  autocomplete="address-level2" required>
                 </p>
 
                 <p>
-                    <label for="vencimento">
-                        <i class="fa-solid fa-calendar-days"></i>
-                        Validade:
+                    <label for="cep">
+                        <i class="fa-solid fa-map-pin"></i>
+                        CEP
                     </label>
 
-                    <input type="text" id="vencimento" name="vencimento" placeholder="MM/AA"  autocomplete="cc-exp" required >
+                    <input type="text"  id="cep"  name="cep"  placeholder="00000-000" autocomplete="postal-code" required>
                 </p>
-            </fieldset>
 
-            <button type="submit">
-                <i class="fa-solid fa-lock"></i>
-                Confirmar pagamento
-            </button>
+            </section>
+
+            <!-- Pagamento com cartão de crédito -->
+            <section  id="dados-credito"  class="grupo-dados grupo-pagamento"  data-payment-method="credito"  aria-labelledby="titulo-credito">
+
+                <h2 id="titulo-credito">
+                    <i class="fa-solid fa-credit-card"></i>
+                    Cartão de crédito
+                </h2>
+
+                <p>
+                    <label for="numero-cartao-credito">
+                        Número do cartão
+                    </label>
+
+                    <input type="text" id="numero-cartao-credito" name="numero_cartao_credito" placeholder="Número do cartão" inputmode="numeric" autocomplete="cc-number" data-field="numero-cartao">
+                </p>
+
+                <p>
+                    <label for="titular-credito">
+                        Nome impresso no cartão
+                    </label>
+
+                    <input type="text" id="titular-credito" name="titular_cartao_credito" placeholder="Nome do titular" autocomplete="cc-name" data-field="titular">
+                </p>
+
+                <p>
+                    <label for="validade-credito">
+                        Validade
+                    </label>
+
+                    <input type="text" id="validade-credito" name="validade_cartao_credito" placeholder="MM/AA" autocomplete="cc-exp" data-field="validade">
+                </p>
+
+                <p>
+                    <label for="cvv-credito">
+                        Código de segurança
+                    </label>
+
+                    <input type="password" id="cvv-credito" name="cvv_cartao_credito" placeholder="CVV" inputmode="numeric" autocomplete="cc-csc" data-field="cvv">
+                </p>
+
+                <p>
+                    <label for="parcelas">
+                        Número de parcelas
+                    </label>
+
+                    <select id="parcelas" name="parcelas" data-field="parcelas">
+
+                        <option value="1">1 parcela</option>
+                        <option value="2">2 parcelas</option>
+                        <option value="3">3 parcelas</option>
+                        <option value="4">4 parcelas</option>
+                        <option value="5">5 parcelas</option>
+
+                    </select>
+                </p>
+
+            </section>
+
+
+            <!-- Pagamento cartão de débito -->
+            <section id="dados-debito" class="grupo-dados grupo-pagamento" data-payment-method="debito" aria-labelledby="titulo-debito">
+
+                <h2 id="titulo-debito">
+                    <i class="fa-solid fa-credit-card"></i>
+                    Cartão de débito
+                </h2>
+
+                <p>
+                    <label for="numero-cartao-debito">
+                        Número do cartão
+                    </label>
+
+                    <input type="text" id="numero-cartao-debito" name="numero_cartao_debito" placeholder="Número do cartão" inputmode="numeric" autocomplete="off" data-field="numero-cartao">
+                </p>
+
+                <p>
+                    <label for="titular-debito">
+                        Nome impresso no cartão
+                    </label>
+
+                    <input type="text" id="titular-debito" name="titular_cartao_debito" placeholder="Nome do titular" autocomplete="off" data-field="titular">
+                </p>
+
+                <p>
+                    <label for="validade-debito">
+                        Validade
+                    </label>
+
+                    <input type="text" id="validade-debito" name="validade_cartao_debito" placeholder="MM/AA"  autocomplete="off" data-field="validade">
+                </p>
+
+                <p>
+                    <label for="cvv-debito">
+                        Código de segurança
+                    </label>
+
+                    <input type="password" id="cvv-debito" name="cvv_cartao_debito" placeholder="CVV" inputmode="numeric" autocomplete="off" data-field="cvv">
+                </p>
+
+            </section>
+
+
+            <!-- PAGAMENTO VIA PIX -->
+            <section
+                id="dados-pix"
+                class="grupo-dados grupo-pagamento"
+                data-payment-method="pix"
+                aria-labelledby="titulo-pix">
+
+                <h2 id="titulo-pix">
+                    <i class="fa-brands fa-pix"></i>
+                    Pagamento via Pix
+                </h2>
+
+                <p>
+                    O código Pix será gerado após a confirmação
+                    do pedido.
+                </p>
+
+                <p>
+                    <label for="titular-pix">
+                        Nome do pagador
+                    </label>
+
+                    <input type="text" id="titular-pix" name="titular_pix" placeholder="Nome completo" autocomplete="name" data-field="titular-pix">
+                </p>
+
+                <input type="hidden" name="tipo_pix" value="copia-cola" data-field="tipo-pix">
+
+            </section>
+
+            <!-- Pagamento via boleto -->
+            <section id="dados-boleto" class="grupo-dados grupo-pagamento" data-payment-method="boleto" aria-labelledby="titulo-boleto">
+
+                <h2 id="titulo-boleto">
+                    <i class="fa-solid fa-barcode"></i>
+                    Boleto bancário
+                </h2>
+
+                <p>
+                    O boleto será gerado após a confirmação
+                    do pedido.
+                </p>
+
+                <p>
+                    <label for="titular-boleto">
+                        Nome completo do pagador
+                    </label>
+
+                    <input type="text" id="titular-boleto" name="titular_boleto" placeholder="Nome completo" autocomplete="name" data-field="titular-boleto">
+                </p>
+
+                <p>
+                    <label for="cpf-boleto">
+                        CPF do pagador
+                    </label>
+
+                    <input type="text" id="cpf-boleto" name="cpf_boleto" placeholder="Digite seu CPF" inputmode="numeric" autocomplete="off" data-field="cpf-boleto">
+                </p>
+
+            </section>
+
+
+            <!-- Confirmação de pagamento -->
+            <section id="confirmacao-pedido">
+
+                <button type="submit" id="confirmar-pagamento">
+                    <i class="fa-solid fa-lock"></i>
+                    Confirmar pagamento
+                </button>
+
+            </section>
 
             <p>
                 <a href="carrinho.html">
@@ -109,6 +271,7 @@
             </p>
 
         </form>
+
     </main>
 
 </body>
