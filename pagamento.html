@@ -16,7 +16,7 @@
 <header>
     <nav>
         <!-- barra de pesquisa -->
-        <method="get">
+        <form action="home.html" method="get">
             <label for="pesquisa">
                 <i class="fa-solid fa-magnifying-glass"></i>
             </label>
@@ -37,7 +37,7 @@
     </nav>
 </header>
 
-            <!-- Seleção da forma de pagamento -->
+ <!-- Seleção da forma de pagamento -->
             <section id="selecao-pagamento">
 
                 <label for="forma-pagamento">
@@ -45,19 +45,23 @@
                     Forma de pagamento
                 </label>
 
-                <select  id="forma-pagamento"  name="forma_pagamento"  data-payment-selector  required>
+                <select
+                    id="forma-pagamento" name="forma_pagamento" data-payment-selector required>
 
+                    <option value="">Selecione uma opção</option>
                     <option value="credito">Cartão de crédito</option>
                     <option value="debito">Cartão de débito</option>
                     <option value="pix">Pix</option>
                     <option value="boleto">Boleto bancário</option>
 
                 </select>
+
             </section>
 
 
             <!-- Endereço de entrega -->
-            <section id="dados-entrega" class="grupo-dados">
+            <section id="dados-entrega"
+                     class="grupo-dados">
 
                 <h2>Endereço de entrega</h2>
 
@@ -67,7 +71,7 @@
                         Endereço completo
                     </label>
 
-                    <input type="text" id="endereco"  name="endereco" placeholder="Rua, bairro e número "  autocomplete="street-address" required>
+                    <input type="text" id="endereco"  name="endereco"  placeholder="Rua, número, bairro e complemento" autocomplete="street-address" required>
                 </p>
 
                 <p>
@@ -76,7 +80,7 @@
                         Cidade
                     </label>
 
-                    <input type="text" id="cidade"  name="cidade"  placeholder="Digite sua cidade"  autocomplete="address-level2" required>
+                    <input type="text"  id="cidade" name="cidade" placeholder="Digite sua cidade" autocomplete="address-level2" required>
                 </p>
 
                 <p>
@@ -85,7 +89,7 @@
                         CEP
                     </label>
 
-                    <input type="text"  id="cep"  name="cep"  placeholder="00000-000" autocomplete="postal-code" required>
+                    <input type="text" id="cep" name="cep" placeholder="00000-000" autocomplete="postal-code" required>
                 </p>
 
             </section>
@@ -274,5 +278,6 @@
 
     </main>
 
+    <script src="script.js"></script>
 </body>
 </html>
