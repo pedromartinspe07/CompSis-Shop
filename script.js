@@ -846,6 +846,7 @@ function inicializarCatalogoEProduto() {
     // 2. Se estivermos na página produto.html (que o Luís está criando), preenche automaticamente o produto clicado
     const estaNaPaginaProduto =
         window.location.pathname.toLowerCase().includes("produto.html") ||
+        document.getElementById("produto") !== null ||
         document.querySelector(".produto-detalhe, #detalhe-produto, #pagina-produto") !== null;
 
     if (estaNaPaginaProduto) {
@@ -861,7 +862,9 @@ function inicializarCatalogoEProduto() {
         if (produtoAtivo) {
             document.title = `${produtoAtivo.nome} - CompSis Shop`;
 
-            const elTitulo = document.querySelector("main h1, main h2, #nome-produto, .titulo-produto");
+            const elTitulo =
+                document.getElementById("produto") ||
+                document.querySelector("h1#produto, #nome-produto, .titulo-produto, main h1, main h2");
             if (elTitulo) elTitulo.textContent = produtoAtivo.nome;
 
             const elImagem = document.querySelector("main img, #imagem-produto, .imagem-produto");
