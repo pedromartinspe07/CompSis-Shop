@@ -847,6 +847,7 @@ function inicializarCatalogoEProduto() {
     const estaNaPaginaProduto =
         window.location.pathname.toLowerCase().includes("produto.html") ||
         document.getElementById("produto") !== null ||
+        document.getElementById("imagemproduto") !== null ||
         document.querySelector(".produto-detalhe, #detalhe-produto, #pagina-produto") !== null;
 
     if (estaNaPaginaProduto) {
@@ -862,28 +863,56 @@ function inicializarCatalogoEProduto() {
         if (produtoAtivo) {
             document.title = `${produtoAtivo.nome} - CompSis Shop`;
 
+            // Atualiza <h1 id="produto"> com o nome do produto selecionado
             const elTitulo =
                 document.getElementById("produto") ||
                 document.querySelector("h1#produto, #nome-produto, .titulo-produto, main h1, main h2");
             if (elTitulo) elTitulo.textContent = produtoAtivo.nome;
 
-            const elImagem = document.querySelector("main img, #imagem-produto, .imagem-produto");
+            // Atualiza <img id="imagemproduto"> com a imagem do produto selecionado
+            const elImagem =
+                document.getElementById("imagemproduto") ||
+                document.querySelector("img#imagemproduto, #imagem-produto, .imagem-produto, main img");
             if (elImagem && produtoAtivo.imagem) {
                 elImagem.src = produtoAtivo.imagem;
                 elImagem.alt = produtoAtivo.nome;
             }
 
-            const elPreco = document.querySelector("#preco-produto, .preco-produto, main strong");
-            if (elPreco && (elPreco.textContent.includes("R$") || elPreco.id === "preco-produto")) {
-                elPreco.textContent = formatarMoeda(produtoAtivo.preco);
-            }
+            const mainProduto = document.querySelector("main");
 
-            const elDescricao = document.querySelector("#descricao-produto, .descricao-produto");
+            // Atualiza ou cria descrição, especificações, preço e botão de compra caso ainda não estejam no HTML
+            let elDescricao = document.querySelector("#descricao-produto, #descricaoproduto, .descricao-produto");
             if (elDescricao && produtoAtivo.descricao) {
                 elDescricao.textContent = produtoAtivo.descricao;
+            } else if (!elDescricao && mainProduto && produtoAtivo.descricao) {
+                elDescricao = document.createElement("p");
+                elDescricao.id = "descricao-produto";
+                elDescricao.textContent = produtoAtivo.descricao;
+                mainProduto.appendChild(elDescricao);
             }
 
-            const btnAddProduto = document.querySelector(".btn-adicionar-carrinho, .btn-adicionar, main button");
+            let elPreco = document.querySelector("#preco-produto, #precoproduto, .preco-produto, main strong");
+            if (elPreco && (elPreco.textContent.includes("R$") || elPreco.id.includes("preco"))) {
+                elPreco.textContent = formatarMoeda(produtoAtivo.preco);
+            } else if (!elPreco && mainProduto) {
+                const pPreco = document.createElement("p");
+                pPreco.className = "bloco-preco-produto";
+                pPreco.innerHTML = `<strong id="preco-produto">${formatarMoeda(produtoAtivo.preco)}</strong>`;
+                mainProduto.appendChild(pPreco);
+            }
+
+            let btnAddProduto = document.querySelector(".btn-adicionar-carrinho, .btn-adicionar, main button");
+            if (!btnAddProduto && mainProduto) {
+                const divAcoes = document.createElement("div");
+                divAcoes.className = "acoes-produto-detalhe";
+                divAcoes.innerHTML = `
+                    <button type="button" class="btn-adicionar-carrinho">Adicionar ao carrinho</button>
+                    <a href="carrinho.html">Ver carrinho</a>
+                `;
+                mainProduto.appendChild(divAcoes);
+                btnAddProduto = divAcoes.querySelector(".btn-adicionar-carrinho");
+            }
+
             if (btnAddProduto) {
                 btnAddProduto.setAttribute("data-id", produtoAtivo.id);
                 btnAddProduto.setAttribute("data-nome", produtoAtivo.nome);
@@ -893,7 +922,7 @@ function inicializarCatalogoEProduto() {
 
             // Se o Luís colocar ou não um campo de CEP na produto.html, sincronizamos ou injetamos o simulador de frete
             let containerFreteProduto = document.querySelector(".simulador-frete, #frete-produto, #calculo-frete");
-            if (!containerFreteProduto && btnAddProduto) {
+            if (!containerFreteProduto && mainProduto) {
                 containerFreteProduto = document.createElement("div");
                 containerFreteProduto.className = "simulador-frete";
                 containerFreteProduto.innerHTML = `
@@ -904,7 +933,7 @@ function inicializarCatalogoEProduto() {
                     </div>
                     <div id="opcoes-frete" class="opcoes-frete" aria-live="polite"></div>
                 `;
-                btnAddProduto.insertAdjacentElement("afterend", containerFreteProduto);
+                mainProduto.appendChild(containerFreteProduto);
             }
             if (containerFreteProduto) {
                 montarWidgetFrete(containerFreteProduto);

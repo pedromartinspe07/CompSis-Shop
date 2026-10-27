@@ -275,6 +275,58 @@ section[aria-labelledby="boas-vindas"] a:hover {
     font-weight: 600;
 }
 
+/* ---------- Página de Detalhes do Produto (produto.html) ---------- */
+#imagemproduto {
+    display: block;
+    max-width: 280px;
+    max-height: 240px;
+    margin: 0 auto 1.5rem;
+    padding: 1rem;
+    background: var(--branco);
+    border: 1px solid var(--cinza-borda);
+    border-top: 4px solid var(--preto);
+    border-radius: var(--raio);
+    object-fit: contain;
+}
+
+.bloco-preco-produto {
+    text-align: center;
+    font-size: 1.75rem;
+    margin: 1rem 0;
+}
+
+.acoes-produto-detalhe {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    max-width: 360px;
+    margin: 1rem auto 1.5rem;
+}
+
+.acoes-produto-detalhe .btn-adicionar-carrinho {
+    width: 100%;
+    padding: 0.85rem 1.4rem;
+    font: inherit;
+    font-weight: 700;
+    color: var(--branco);
+    background: var(--vermelho);
+    border: 2px solid var(--vermelho);
+    border-radius: var(--raio);
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.acoes-produto-detalhe .btn-adicionar-carrinho:hover {
+    background: var(--preto);
+    border-color: var(--preto);
+}
+
+main:has(#produto) .simulador-frete {
+    max-width: 420px;
+    margin: 1.5rem auto;
+}
+
 /* ---------- Carrinho de Compras ---------- */
 #secao-itens-carrinho {
     margin-bottom: 2.5rem;
