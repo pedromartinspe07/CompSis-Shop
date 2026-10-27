@@ -850,7 +850,8 @@ function inicializarCatalogoEProduto() {
         caminhoPagina.includes("produtos.html") ||
         document.getElementById("produto") !== null ||
         document.getElementById("imagemproduto") !== null ||
-        document.querySelector(".produto-detalhe, #detalhe-produto, #pagina-produto") !== null;
+        document.getElementById("imagemdoproduto") !== null ||
+        document.querySelector(".produto-detalhe, #detalhe-produto, #pagina-produto, .descricao-produto") !== null;
 
     if (estaNaPaginaProduto) {
         const params = new URLSearchParams(window.location.search);
@@ -871,13 +872,22 @@ function inicializarCatalogoEProduto() {
                 document.querySelector("h1#produto, #nome-produto, .titulo-produto, main h1, main h2");
             if (elTitulo) elTitulo.textContent = produtoAtivo.nome;
 
-            // Atualiza <img id="imagemproduto"> com a imagem do produto selecionado
+            // Atualiza <img id="imagemproduto"> ou <img id="imagemdoproduto"> com a imagem do produto selecionado
             const elImagem =
                 document.getElementById("imagemproduto") ||
-                document.querySelector("img#imagemproduto, #imagem-produto, .imagem-produto, main img");
+                document.getElementById("imagemdoproduto") ||
+                document.querySelector("img#imagemproduto, img#imagemdoproduto, #imagem-produto, .imagem-produto, main img");
             if (elImagem && produtoAtivo.imagem) {
-                elImagem.src = produtoAtivo.imagem;
-                elImagem.alt = produtoAtivo.nome;
+                if (elImagem.tagName === "IMG") {
+                    elImagem.src = produtoAtivo.imagem;
+                    elImagem.alt = produtoAtivo.nome;
+                } else {
+                    const imgInterna = elImagem.querySelector("img");
+                    if (imgInterna) {
+                        imgInterna.src = produtoAtivo.imagem;
+                        imgInterna.alt = produtoAtivo.nome;
+                    }
+                }
             }
 
             const mainProduto = document.querySelector("main");

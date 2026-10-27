@@ -275,9 +275,12 @@ section[aria-labelledby="boas-vindas"] a:hover {
     font-weight: 600;
 }
 
-/* ---------- Página de Detalhes do Produto (produto.html) ---------- */
-#imagemproduto {
-    display: block;
+/* ---------- Página de Detalhes do Produto (produto.html / produtos.html) ---------- */
+#imagemproduto,
+#imagemdoproduto {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     max-width: 280px;
     max-height: 240px;
     margin: 0 auto 1.5rem;
