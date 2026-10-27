@@ -213,6 +213,13 @@ function inicializarLogin() {
     const inputSenha = document.getElementById("senha");
     const inputConfirmarSenha = document.getElementById("confirmar-senha");
 
+    //mudar o nome de "minha conta para o nome no login"
+    const nome = localStorage.getItem("usuarioNome");
+
+    const nomeUsuario = document.getElementById("nomeUsuario");
+    const usuarioLink = document.getElementById("usuarioLink");
+
+
     // Se tem email e senha, mas NÃO tem confirmar-senha, estamos no login.html
     if (!inputEmail || !inputSenha || inputConfirmarSenha) return;
 
