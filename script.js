@@ -866,17 +866,17 @@ function inicializarCatalogoEProduto() {
         if (produtoAtivo) {
             document.title = `${produtoAtivo.nome} - CompSis Shop`;
 
-            // Atualiza <h1 id="produto"> com o nome do produto selecionado
+            // 1. Atualiza <h1 id="produto"> com o nome do produto selecionado
             const elTitulo =
                 document.getElementById("produto") ||
                 document.querySelector("h1#produto, #nome-produto, .titulo-produto, main h1, main h2");
             if (elTitulo) elTitulo.textContent = produtoAtivo.nome;
 
-            // Atualiza <img id="imagemproduto"> ou <img id="imagemdoproduto"> com a imagem do produto selecionado
+            // 2. Atualiza <img id="imagemproduto"> com a imagem do produto selecionado
             const elImagem =
                 document.getElementById("imagemproduto") ||
                 document.getElementById("imagemdoproduto") ||
-                document.querySelector("img#imagemproduto, img#imagemdoproduto, #imagem-produto, .imagem-produto, main img");
+                document.querySelector("img#imagemproduto, .imagemdoproduto img, #imagem-produto, .imagem-produto, main img");
             if (elImagem && produtoAtivo.imagem) {
                 if (elImagem.tagName === "IMG") {
                     elImagem.src = produtoAtivo.imagem;
@@ -890,40 +890,37 @@ function inicializarCatalogoEProduto() {
                 }
             }
 
-            const mainProduto = document.querySelector("main");
-
-            // Atualiza ou cria descrição, especificações, preço e botão de compra caso ainda não estejam no HTML
-            let elDescricao = document.querySelector("#descricao-produto, #descricaoproduto, .descricao-produto");
+            // 3. Atualiza <p id="descricao"> com a descrição do produto
+            const elDescricao =
+                document.getElementById("descricao") ||
+                document.querySelector("#descricao-produto p#descricao, #descricaoproduto, .descricao-produto");
             if (elDescricao && produtoAtivo.descricao) {
-                elDescricao.textContent = produtoAtivo.descricao;
-            } else if (!elDescricao && mainProduto && produtoAtivo.descricao) {
-                elDescricao = document.createElement("p");
-                elDescricao.id = "descricao-produto";
-                elDescricao.textContent = produtoAtivo.descricao;
-                mainProduto.appendChild(elDescricao);
+                const especificacoesTexto =
+                    produtoAtivo.especificacoes && produtoAtivo.especificacoes.length > 0
+                        ? ` (${produtoAtivo.especificacoes.join(" • ")})`
+                        : "";
+                elDescricao.textContent = `${produtoAtivo.descricao}${especificacoesTexto}`;
             }
 
-            let elPreco = document.querySelector("#preco-produto, #precoproduto, .preco-produto, main strong");
-            if (elPreco && (elPreco.textContent.includes("R$") || elPreco.id.includes("preco"))) {
-                elPreco.textContent = formatarMoeda(produtoAtivo.preco);
-            } else if (!elPreco && mainProduto) {
-                const pPreco = document.createElement("p");
-                pPreco.className = "bloco-preco-produto";
-                pPreco.innerHTML = `<strong id="preco-produto">${formatarMoeda(produtoAtivo.preco)}</strong>`;
-                mainProduto.appendChild(pPreco);
+            // 4. Atualiza <span id="preco"> (como já existe "R$ " antes do span no HTML do Luís, formata só o número)
+            const elSpanPreco = document.getElementById("preco");
+            if (elSpanPreco) {
+                const numeroPreco = Number(produtoAtivo.preco) || 0;
+                elSpanPreco.textContent = numeroPreco.toLocaleString("pt-BR", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+            } else {
+                const elPreco = document.querySelector("#preco-produto, #precoproduto, .preco-produto, main strong");
+                if (elPreco) {
+                    elPreco.textContent = formatarMoeda(produtoAtivo.preco);
+                }
             }
 
-            let btnAddProduto = document.querySelector(".btn-adicionar-carrinho, .btn-adicionar, main button");
-            if (!btnAddProduto && mainProduto) {
-                const divAcoes = document.createElement("div");
-                divAcoes.className = "acoes-produto-detalhe";
-                divAcoes.innerHTML = `
-                    <button type="button" class="btn-adicionar-carrinho">Adicionar ao carrinho</button>
-                    <a href="carrinho.html">Ver carrinho</a>
-                `;
-                mainProduto.appendChild(divAcoes);
-                btnAddProduto = divAcoes.querySelector(".btn-adicionar-carrinho");
-            }
+            // 5. Atualiza <button id="botaoproduto"> com os dados do produto para adicionar ao carrinho
+            const btnAddProduto =
+                document.getElementById("botaoproduto") ||
+                document.querySelector(".btn-adicionar-carrinho, .btn-adicionar, main button");
 
             if (btnAddProduto) {
                 btnAddProduto.setAttribute("data-id", produtoAtivo.id);
@@ -932,9 +929,12 @@ function inicializarCatalogoEProduto() {
                 btnAddProduto.setAttribute("data-icone", produtoAtivo.icone || "📦");
             }
 
-            // Se o Luís colocar ou não um campo de CEP na produto.html, sincronizamos ou injetamos o simulador de frete
+            // 6. Insere o simulador de frete por CEP na página do produto
+            const secaoProduto =
+                (btnAddProduto && btnAddProduto.closest("section")) ||
+                document.querySelector("main");
             let containerFreteProduto = document.querySelector(".simulador-frete, #frete-produto, #calculo-frete");
-            if (!containerFreteProduto && mainProduto) {
+            if (!containerFreteProduto && secaoProduto) {
                 containerFreteProduto = document.createElement("div");
                 containerFreteProduto.className = "simulador-frete";
                 containerFreteProduto.innerHTML = `
@@ -945,7 +945,7 @@ function inicializarCatalogoEProduto() {
                     </div>
                     <div id="opcoes-frete" class="opcoes-frete" aria-live="polite"></div>
                 `;
-                mainProduto.appendChild(containerFreteProduto);
+                secaoProduto.appendChild(containerFreteProduto);
             }
             if (containerFreteProduto) {
                 montarWidgetFrete(containerFreteProduto);

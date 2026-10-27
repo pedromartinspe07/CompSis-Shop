@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produto - CompSis Shop</title>
+
+    <!-- Biblioteca de ícones -->
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+</head>
+
+<body>
+
+    <header>
+        <nav aria-label="Navegação principal">
+            <form action="home.html" method="get" role="search">
+                <label for="pesquisa">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </label>
+                <input type="search" id="pesquisa" name="q">
+                <button type="submit">Buscar</button>
+            </form>
+            <a href="home.html">Home</a>
+            <a href="home.html#contato">Contato</a>
+            <a href="carrinho.html">Meu carrinho</a>
+            <a href="login.html" id="usuarioLink" aria-label="Minha conta">
+                <i class="fa-solid fa-user"></i>
+            </a>
+        </nav>
+    </header>
+    <main id="descricao-produto">
+        <section class="imagemdoproduto">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjc1my1vNG4EZ1IdK2KutlzUuuk5qapJmZn0Y8whVflQ&s" alt="imagem do produto" id="imagemproduto">
+        </section>
+
+        <section id="descricao-produto">
+            <h1 id="produto"> </h1>
+            <h2>Descrição do produto</h2>
+            <p id="descricao"></p>
+            <p><strong>R$ <span id="preco"></span></strong></p>
+            <button type="button" class="btn-adicionar-carrinho" id="botaoproduto">Adicionar ao carrinho</button>
+            <a href="carrinho.html">Ver carrinho</a>
+        </section>
+    </main>
+    
+    <footer id="contato">
+        <h2>CompSis Shop</h2>
+        <p>Dúvidas? Entre em contato: atendimento@compsis.shop</p>
+        <p>&copy; 2026 CompSis Shop</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
