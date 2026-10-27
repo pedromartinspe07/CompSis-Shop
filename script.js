@@ -838,14 +838,16 @@ function inicializarCatalogoEProduto() {
             el.addEventListener("click", (e) => {
                 e.preventDefault();
                 localStorage.setItem("compsis_produto_selecionado", JSON.stringify(dadosProduto));
-                window.location.href = `produto.html?id=${encodeURIComponent(dadosProduto.id)}`;
+                window.location.href = `produtos.html?id=${encodeURIComponent(dadosProduto.id)}`;
             });
         });
     });
 
-    // 2. Se estivermos na página produto.html (que o Luís está criando), preenche automaticamente o produto clicado
+    // 2. Se estivermos na página produtos.html / produto.html (que o Luís está criando), preenche automaticamente o produto clicado
+    const caminhoPagina = window.location.pathname.toLowerCase();
     const estaNaPaginaProduto =
-        window.location.pathname.toLowerCase().includes("produto.html") ||
+        caminhoPagina.includes("produto.html") ||
+        caminhoPagina.includes("produtos.html") ||
         document.getElementById("produto") !== null ||
         document.getElementById("imagemproduto") !== null ||
         document.querySelector(".produto-detalhe, #detalhe-produto, #pagina-produto") !== null;
@@ -1062,7 +1064,7 @@ function inicializarCarrinho() {
                 el.addEventListener("click", () => {
                     const prodDetalhe = dadosCatalogo.id ? dadosCatalogo : item;
                     localStorage.setItem("compsis_produto_selecionado", JSON.stringify(prodDetalhe));
-                    window.location.href = `produto.html?id=${encodeURIComponent(item.id || "")}`;
+                    window.location.href = `produtos.html?id=${encodeURIComponent(item.id || "")}`;
                 });
             });
 
