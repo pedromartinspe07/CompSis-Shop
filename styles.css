@@ -310,6 +310,20 @@ section[aria-labelledby="resumo-pedido"] h2 {
     font-size: 1.15rem;
 }
 
+.item-carrinho .icone-produto {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 120px;
+    margin: 0.4rem 0;
+}
+
+.item-carrinho .icone-produto img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
 .item-carrinho p {
     margin: 0;
 }
@@ -359,6 +373,98 @@ section[aria-labelledby="resumo-pedido"] {
 section[aria-labelledby="resumo-pedido"] p {
     margin: 0.5rem 0;
     font-size: 1.05rem;
+}
+
+/* ---------- Simulador de Frete (Carrinho e Produto) ---------- */
+.simulador-frete {
+    margin: 1rem 0 1.25rem;
+    padding: 1rem;
+    background: var(--branco);
+    border: 1px solid var(--cinza-borda);
+    border-radius: var(--raio);
+    text-align: left;
+}
+
+.simulador-frete > label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.linha-cep-frete {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.linha-cep-frete input {
+    flex: 1;
+    min-width: 0;
+    padding: 0.55rem 0.75rem;
+    font: inherit;
+    border: 1px solid var(--cinza-borda);
+    border-radius: var(--raio);
+}
+
+.linha-cep-frete button {
+    width: auto !important;
+    margin: 0 !important;
+    padding: 0.55rem 1rem !important;
+    font: inherit;
+    font-weight: 700;
+    color: var(--branco);
+    background: var(--preto);
+    border: 2px solid var(--preto);
+    border-radius: var(--raio);
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.linha-cep-frete button:hover {
+    background: var(--vermelho);
+    border-color: var(--vermelho);
+}
+
+.localidade-frete {
+    margin: 0.75rem 0 0.5rem !important;
+    font-size: 0.9rem !important;
+    color: var(--cinza-texto);
+}
+
+.lista-transportadoras {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    margin-top: 0.5rem;
+}
+
+.opcao-transportadora {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.55rem 0.7rem;
+    background: var(--cinza-claro);
+    border: 1px solid var(--cinza-borda);
+    border-radius: var(--raio);
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.opcao-transportadora:hover {
+    border-color: var(--vermelho);
+}
+
+.opcao-transportadora input[type="radio"] {
+    accent-color: var(--vermelho);
+    margin: 0;
+}
+
+.info-transportadora {
+    flex: 1;
+}
+
+.preco-transportadora {
+    color: var(--preto);
 }
 
 #btn-finalizar-pedido {

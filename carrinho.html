@@ -61,8 +61,18 @@
 
         <section aria-labelledby="resumo-pedido">
             <h2 id="resumo-pedido">Resumo do pedido</h2>
+
+            <div class="simulador-frete">
+                <label for="cep-frete"><strong>Calcular frete e prazo:</strong></label>
+                <div class="linha-cep-frete">
+                    <input type="text" id="cep-frete" placeholder="00000-000" inputmode="numeric" maxlength="9">
+                    <button type="button" id="btn-calcular-frete">Calcular</button>
+                </div>
+                <div id="opcoes-frete" aria-live="polite"></div>
+            </div>
+
             <p>Subtotal: <span id="subtotal-pedido">R$ 1.349,80</span></p>
-            <p>Frete: calculado na próxima etapa</p>
+            <p>Frete: <span id="valor-frete-carrinho">calculado pelo CEP acima</span></p>
             <p><strong>Total: <span id="preco-total">R$ 1.349,80</span></strong></p>
             <a href="pagamento.html" id="btn-finalizar-pedido">Finalizar compra</a>
         </section>
